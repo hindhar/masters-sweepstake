@@ -7,6 +7,7 @@ import { AwardsPanel } from "./AwardsPanel";
 import { CarryingPicks } from "./CarryingPicks";
 import { DeadWeight } from "./DeadWeight";
 import { ScoreDistribution } from "./ScoreDistribution";
+import { PickPopularity } from "./PickPopularity";
 
 interface FunStatsPanelProps {
   stats: FunStats | null;
@@ -155,6 +156,12 @@ export const FunStatsPanel = React.memo(function FunStatsPanel({
       <SectionCard>
         <SectionLabel>Dead Weight</SectionLabel>
         <DeadWeight leaderboard={leaderboard} golfers={golfers} />
+      </SectionCard>
+
+      {/* Pick popularity */}
+      <SectionCard>
+        <SectionLabel>Pick Popularity</SectionLabel>
+        <PickPopularity leaderboard={leaderboard} golfers={golfers} />
       </SectionCard>
 
       {/* Score distribution */}
