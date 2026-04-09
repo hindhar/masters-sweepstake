@@ -39,6 +39,9 @@ export interface ParticipantEntry {
   golferScores: ParticipantGolferScore[];
   bestGolfer: { name: string; score: number } | null;
   worstGolfer: { name: string; score: number } | null;
+  countingScores: number[]; // sorted ascending individual scores of counting 4 (for tiebreaker)
+  madeTheCut: number; // how many of their 8 golfers made the cut
+  eligible: boolean; // need >= 4 golfers to make the cut
 }
 
 export interface TournamentInfo {

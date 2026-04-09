@@ -79,13 +79,18 @@ export function calculateParticipantScore(
     ? { name: countingPicks[countingPicks.length - 1].golferName, score: countingPicks[countingPicks.length - 1].score!.scoreToPar }
     : null;
 
-  // Count how many golfers have started (thru > 0 holes)
-  const thruCount = golferScores.filter(
-    (gs) => gs.score && gs.score.thru !== "-" && gs.score.thru !== "0"
+  // Eligibility: need at least 4 golfers to make the cut
+  // During R1/R2 (before the cut), all golfers with scores count as "made the cut"
+  // After the cut, only golfers with status !== "cut" count
+  const madeTheCut = golferScores.filter(
+    (gs) => gs.score && gs.score.status !== "cut" && gs.score.status !== "withdrawn"
   ).length;
+  const eligible = madeTheCut >= 4;
 
-  void droppedPicks; // used for clarity, not needed in output
-  void thruCount;
+  // Sorted individual counting scores for tiebreaker (ascending = best first)
+  const countingScores = countingPicks.map((gs) => gs.score!.scoreToPar).sort((a, b) => a - b);
+
+  void droppedPicks;
 
   return {
     participant,
@@ -97,5 +102,8 @@ export function calculateParticipantScore(
     golferScores,
     bestGolfer,
     worstGolfer,
+    countingScores,
+    madeTheCut,
+    eligible,
   };
 }
