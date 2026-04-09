@@ -106,9 +106,15 @@ export async function fetchESPNScores(): Promise<{
   tournament: TournamentInfo;
   golfers: GolferScore[];
 }> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
   const res = await fetch(ESPN_SCOREBOARD_URL, {
-    next: { revalidate: 30 },
+    cache: "no-store",
+    signal: controller.signal,
   });
+
+  clearTimeout(timeout);
 
   if (!res.ok) {
     throw new Error(`ESPN API returned ${res.status}`);
