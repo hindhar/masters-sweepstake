@@ -11,7 +11,7 @@ interface LeaderboardRowProps {
   entry: ParticipantEntry;
   isLeader: boolean;
   isExpanded: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
 }
 
 const LeaderboardRow = React.memo(function LeaderboardRow({
@@ -36,7 +36,7 @@ const LeaderboardRow = React.memo(function LeaderboardRow({
     >
       {/* Main row */}
       <button
-        onClick={onToggle}
+        onClick={() => onToggle(participant.id)}
         className="w-full flex items-center gap-3 px-3 py-3 md:py-0 text-left hover:bg-white/5 transition-colors cursor-pointer"
         style={{ minHeight: "48px" }}
         aria-expanded={isExpanded}

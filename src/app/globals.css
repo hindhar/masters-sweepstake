@@ -1,69 +1,55 @@
 @import "tailwindcss";
 
-:root {
+@theme inline {
   /* Augusta Green palette */
-  --augusta: #006747;
-  --augusta-deep: #004d35;
-  --augusta-light: #008c5e;
-  --augusta-surface: #00503a;
+  --color-augusta: #006747;
+  --color-augusta-deep: #004d35;
+  --color-augusta-light: #008c5e;
+  --color-augusta-surface: #00503a;
 
   /* Masters Gold */
-  --masters-gold: #FFC72C;
-  --masters-gold-dim: #D4A520;
-  --masters-gold-bright: #FFD54F;
+  --color-masters-gold: #FFC72C;
+  --color-masters-gold-dim: #D4A520;
+  --color-masters-gold-bright: #FFD54F;
 
   /* Fairway & accent */
-  --fairway: #2D5F3C;
-  --azalea: #CF4B7A;
-  --magnolia: #F5F0E8;
-  --dogwood: #FFFFFF;
+  --color-fairway: #2D5F3C;
+  --color-azalea: #CF4B7A;
+  --color-magnolia: #F5F0E8;
+  --color-dogwood: #FFFFFF;
 
   /* Scores */
-  --score-under: #FF4D6A;
-  --score-over: rgba(255, 255, 255, 0.5);
-  --score-even: rgba(255, 255, 255, 0.8);
-
-  /* Text */
-  --text-on-green: #FFFFFF;
-  --text-on-green-muted: rgba(255, 255, 255, 0.7);
-  --text-on-green-dim: rgba(255, 255, 255, 0.4);
+  --color-score-under: #FF4D6A;
+  --color-score-over: #ffffff80;
+  --color-score-even: #ffffffcc;
 
   /* Movement */
-  --move-up: #4ADE80;
-  --move-down: #F87171;
-}
+  --color-move-up: #4ADE80;
+  --color-move-down: #F87171;
 
-@theme inline {
-  --color-augusta: var(--augusta);
-  --color-augusta-deep: var(--augusta-deep);
-  --color-augusta-light: var(--augusta-light);
-  --color-augusta-surface: var(--augusta-surface);
-  --color-masters-gold: var(--masters-gold);
-  --color-masters-gold-dim: var(--masters-gold-dim);
-  --color-masters-gold-bright: var(--masters-gold-bright);
-  --color-fairway: var(--fairway);
-  --color-azalea: var(--azalea);
-  --color-magnolia: var(--magnolia);
-  --color-dogwood: var(--dogwood);
-  --color-score-under: var(--score-under);
-  --color-score-over: var(--score-over);
-  --color-score-even: var(--score-even);
-  --color-move-up: var(--move-up);
-  --color-move-down: var(--move-down);
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-jetbrains-mono);
   --font-display: var(--font-playfair);
 }
 
-body {
-  background: var(--augusta);
-  color: var(--text-on-green);
-  font-family: var(--font-sans);
+:root {
+  /* Text colours as CSS vars (used in inline styles) */
+  --augusta: #006747;
+  --augusta-deep: #004d35;
+  --augusta-surface: #00503a;
+  --masters-gold: #FFC72C;
+  --text-on-green: #FFFFFF;
+  --text-on-green-muted: rgba(255, 255, 255, 0.7);
+  --text-on-green-dim: rgba(255, 255, 255, 0.4);
+  --score-under: #FF4D6A;
+  --move-up: #4ADE80;
+  --move-down: #F87171;
 }
 
-/* Tabular numbers for score alignment */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+body {
+  background: #006747;
+  color: #FFFFFF;
 }
 
 /* Scoreboard row divider */
@@ -71,27 +57,17 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Score cell animations */
-@keyframes score-flash {
-  0% { background-color: rgba(255, 199, 44, 0.4); }
-  100% { background-color: transparent; }
-}
-
-.score-flash {
-  animation: score-flash 0.8s ease-out;
-}
-
 /* Gold glow for leader */
 .leader-glow {
   box-shadow: 0 0 20px rgba(255, 199, 44, 0.3);
 }
 
-/* Custom scrollbar for dark theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--augusta-deep);
+  background: #004d35;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);

@@ -1,3 +1,4 @@
+import React from "react";
 import { FunStats } from "@/types";
 import { formatScoreToPar } from "@/lib/format";
 
@@ -11,7 +12,7 @@ interface StatCardProps {
   description: string;
 }
 
-function StatCard({ title, value, description }: StatCardProps) {
+const StatCard = React.memo(function StatCard({ title, value, description }: StatCardProps) {
   return (
     <div
       className="rounded-lg p-4"
@@ -37,9 +38,9 @@ function StatCard({ title, value, description }: StatCardProps) {
       </div>
     </div>
   );
-}
+});
 
-export function FunStatsPanel({ stats }: FunStatsPanelProps) {
+export const FunStatsPanel = React.memo(function FunStatsPanel({ stats }: FunStatsPanelProps) {
   if (!stats) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -111,4 +112,4 @@ export function FunStatsPanel({ stats }: FunStatsPanelProps) {
       ))}
     </div>
   );
-}
+});

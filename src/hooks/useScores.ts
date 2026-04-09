@@ -3,10 +3,14 @@
 import useSWR from "swr";
 import { LeaderboardAPIResponse } from "@/types";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+async function fetchFromProxy(): Promise<LeaderboardAPIResponse> {
+  const res = await fetch("/api/scores");
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
 
 export function useScores() {
-  return useSWR<LeaderboardAPIResponse>("/api/scores", fetcher, {
+  return useSWR<LeaderboardAPIResponse>("espn-scores", fetchFromProxy, {
     refreshInterval: 60_000,
     dedupingInterval: 30_000,
     revalidateOnFocus: true,

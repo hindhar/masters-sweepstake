@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useMemo } from "react";
 import { GolferScore } from "@/types";
 import { ScoreCell } from "@/components/ScoreCell";
 
@@ -7,7 +8,7 @@ interface LiveTickerProps {
   golfers: GolferScore[];
 }
 
-export function LiveTicker({ golfers }: LiveTickerProps) {
+export const LiveTicker = React.memo(function LiveTicker({ golfers }: LiveTickerProps) {
   if (!golfers || golfers.length === 0) {
     return (
       <div
@@ -27,13 +28,21 @@ export function LiveTicker({ golfers }: LiveTickerProps) {
     );
   }
 
-  const activeGolfers = golfers
-    .filter((g) => g.status !== "cut" && g.status !== "withdrawn")
-    .sort((a, b) => a.position - b.position);
+  const activeGolfers = useMemo(
+    () =>
+      golfers
+        .filter((g) => g.status !== "cut" && g.status !== "withdrawn")
+        .sort((a, b) => a.position - b.position),
+    [golfers]
+  );
 
-  const cutGolfers = golfers
-    .filter((g) => g.status === "cut" || g.status === "withdrawn")
-    .sort((a, b) => a.scoreToPar - b.scoreToPar);
+  const cutGolfers = useMemo(
+    () =>
+      golfers
+        .filter((g) => g.status === "cut" || g.status === "withdrawn")
+        .sort((a, b) => a.scoreToPar - b.scoreToPar),
+    [golfers]
+  );
 
   return (
     <div
@@ -138,4 +147,4 @@ export function LiveTicker({ golfers }: LiveTickerProps) {
       )}
     </div>
   );
-}
+});

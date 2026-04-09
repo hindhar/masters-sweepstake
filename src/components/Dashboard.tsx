@@ -12,13 +12,17 @@ type Tab = "leaderboard" | "tournament" | "groups" | "stats";
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("leaderboard");
+  const [search, setSearch] = useState("");
+
   const {
+    leaderboard,
     fullLeaderboard,
     tournament,
     golfers,
     funStats,
+    isLoading,
     isValidating,
-  } = useLeaderboard();
+  } = useLeaderboard(search);
 
   return (
     <div className="min-h-screen bg-augusta flex flex-col">
@@ -51,13 +55,19 @@ export function Dashboard() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full">
-        {/* Left: Leaderboard (self-contained with its own search) */}
+        {/* Left: Leaderboard */}
         <div
           className={`flex-1 min-w-0 p-4 lg:p-6 ${
             activeTab !== "leaderboard" ? "hidden lg:block" : ""
           }`}
         >
-          <HeroLeaderboard />
+          <HeroLeaderboard
+            leaderboard={leaderboard}
+            isLoading={isLoading}
+            isValidating={isValidating}
+            search={search}
+            onSearchChange={setSearch}
+          />
         </div>
 
         {/* Right sidebar (desktop) / tabs (mobile) */}

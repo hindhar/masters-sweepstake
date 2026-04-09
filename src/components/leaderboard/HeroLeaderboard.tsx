@@ -1,20 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useLeaderboard } from "@/hooks/useLeaderboard";
+import { useState, useCallback } from "react";
+import { ParticipantEntry } from "@/types";
 import { SearchBar } from "@/components/SearchBar";
 import { LeaderboardRow } from "./LeaderboardRow";
 
-export function HeroLeaderboard() {
-  const [search, setSearch] = useState("");
+interface HeroLeaderboardProps {
+  leaderboard: ParticipantEntry[] | null;
+  isLoading: boolean;
+  isValidating: boolean;
+  search: string;
+  onSearchChange: (value: string) => void;
+}
+
+export function HeroLeaderboard({
+  leaderboard,
+  isLoading,
+  isValidating,
+  search,
+  onSearchChange,
+}: HeroLeaderboardProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const { leaderboard, isLoading, isValidating } = useLeaderboard(search);
-
-  const handleToggle = (id: string) => {
+  const handleToggle = useCallback((id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
-  };
+  }, []);
 
   return (
     <section
@@ -23,7 +33,7 @@ export function HeroLeaderboard() {
     >
       {/* Search + column headers */}
       <div className="px-4 pt-4 pb-2 space-y-3">
-        <SearchBar value={search} onChange={setSearch} />
+        <SearchBar value={search} onChange={onSearchChange} />
 
         {/* Column headers */}
         <div
@@ -67,25 +77,17 @@ export function HeroLeaderboard() {
         )}
 
         {leaderboard && (
-          <AnimatePresence initial={false}>
+          <div>
             {leaderboard.map((entry) => (
-              <motion.div
+              <LeaderboardRow
                 key={entry.participant.id}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <LeaderboardRow
-                  entry={entry}
-                  isLeader={entry.position === 1}
-                  isExpanded={expandedId === entry.participant.id}
-                  onToggle={() => handleToggle(entry.participant.id)}
-                />
-              </motion.div>
+                entry={entry}
+                isLeader={entry.position === 1}
+                isExpanded={expandedId === entry.participant.id}
+                onToggle={handleToggle}
+              />
             ))}
-          </AnimatePresence>
+          </div>
         )}
 
         {isValidating && leaderboard && (

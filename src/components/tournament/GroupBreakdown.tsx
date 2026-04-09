@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useMemo } from "react";
 import { GolferScore, ParticipantEntry, GroupId } from "@/types";
 import { golfers as golferData } from "@/data/golfers";
 import { ScoreCell } from "@/components/ScoreCell";
@@ -20,8 +21,47 @@ const GROUP_SHORT: Record<GroupId, string> = {
   G8: "G8",
 };
 
-export function GroupBreakdown({ golfers, participants }: GroupBreakdownProps) {
-  if (!golfers || golfers.length === 0) {
+const ALL_GROUPS: GroupId[] = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"];
+
+export const GroupBreakdown = React.memo(function GroupBreakdown({
+  golfers,
+  participants,
+}: GroupBreakdownProps) {
+  const groupLeaders = useMemo(() => {
+    if (!golfers || golfers.length === 0) return null;
+
+    const golferScoreMap = new Map(golfers.map((g) => [g.name, g]));
+
+    return ALL_GROUPS.map((group) => {
+      const groupGolfers = golferData
+        .filter((g) => g.group === group)
+        .map((g) => ({
+          info: g,
+          score: golferScoreMap.get(g.name) ?? null,
+        }))
+        .filter((g) => g.score !== null)
+        .sort(
+          (a, b) => (a.score!.scoreToPar ?? 99) - (b.score!.scoreToPar ?? 99)
+        );
+
+      const leader = groupGolfers[0] ?? null;
+
+      let pickedBy = 0;
+      if (leader?.info) {
+        for (const p of participants) {
+          for (const gs of p.golferScores) {
+            if (gs.golferName.toLowerCase() === leader.info.name.toLowerCase()) {
+              pickedBy++;
+            }
+          }
+        }
+      }
+
+      return { group, leader, pickedBy };
+    });
+  }, [golfers, participants]);
+
+  if (!groupLeaders) {
     return (
       <div>
         <h2
@@ -36,38 +76,6 @@ export function GroupBreakdown({ golfers, participants }: GroupBreakdownProps) {
       </div>
     );
   }
-
-  const golferScoreMap = new Map(golfers.map((g) => [g.name, g]));
-  const groups: GroupId[] = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"];
-
-  const groupLeaders = groups.map((group) => {
-    const groupGolfers = golferData
-      .filter((g) => g.group === group)
-      .map((g) => ({
-        info: g,
-        score: golferScoreMap.get(g.name) ?? null,
-      }))
-      .filter((g) => g.score !== null)
-      .sort(
-        (a, b) =>
-          (a.score!.scoreToPar ?? 99) - (b.score!.scoreToPar ?? 99)
-      );
-
-    const leader = groupGolfers[0] ?? null;
-
-    let pickedBy = 0;
-    if (leader?.info) {
-      for (const p of participants) {
-        for (const gs of p.golferScores) {
-          if (gs.golferName.toLowerCase() === leader.info.name.toLowerCase()) {
-            pickedBy++;
-          }
-        }
-      }
-    }
-
-    return { group, leader, pickedBy };
-  });
 
   return (
     <div>
@@ -136,4 +144,4 @@ export function GroupBreakdown({ golfers, participants }: GroupBreakdownProps) {
       </div>
     </div>
   );
-}
+});

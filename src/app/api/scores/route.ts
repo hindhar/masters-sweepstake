@@ -4,6 +4,11 @@ import https from "https";
 export const dynamic = "force-dynamic";
 export const maxDuration = 10;
 
+// Server-side cache: avoid hitting ESPN on every client poll
+let cachedResponse: ReturnType<typeof NextResponse.json> | null = null;
+let cacheExpiry = 0;
+const CACHE_TTL_MS = 30_000;
+
 const ESPN_URL =
   "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard";
 
@@ -31,6 +36,10 @@ function fetchJSON(url: string): Promise<Record<string, unknown>> {
 }
 
 export async function GET() {
+  if (cachedResponse && Date.now() < cacheExpiry) {
+    return cachedResponse;
+  }
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const raw: any = await fetchJSON(ESPN_URL);
@@ -111,7 +120,7 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         tournament: {
           name: event.name || "The Masters 2026",
@@ -127,6 +136,9 @@ export async function GET() {
         },
       }
     );
+    cachedResponse = response;
+    cacheExpiry = Date.now() + CACHE_TTL_MS;
+    return response;
   } catch (error) {
     console.error("ESPN fetch error:", error);
     return NextResponse.json({
