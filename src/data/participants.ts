@@ -76,8 +76,8 @@ export const participants: ParticipantPicks[] = [
     },
   },
   {
-    id: slug("Alex Dalziel"),
-    name: "Alex Dalziel",
+    id: slug("Alex Dalziel 2"),
+    name: "Alex Dalziel 2",
     picks: {
       G1: "Bryson DeChambeau",
       G2: "Ludvig Aberg",
@@ -1070,8 +1070,8 @@ export const participants: ParticipantPicks[] = [
     },
   },
   {
-    id: slug("Leo Seymour"),
-    name: "Leo Seymour",
+    id: slug("Leo Seymour 2"),
+    name: "Leo Seymour 2",
     picks: {
       G1: "Scottie Scheffler",
       G2: "Ludvig Aberg",
