@@ -30,31 +30,7 @@ export function Dashboard() {
       {/* Header */}
       <MastersHeader tournament={tournament} isValidating={isValidating} />
 
-      {/* Desktop tab bar */}
-      <div className="hidden lg:flex border-b border-white/[0.06]">
-        {(
-          [
-            { key: "leaderboard", label: "Leaderboard" },
-            { key: "tournament", label: "Tournament" },
-            { key: "groups", label: "Groups" },
-            { key: "stats", label: "Stats" },
-          ] as const
-        ).map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            className={`flex-1 py-3 text-xs uppercase tracking-[0.15em] transition-colors ${
-              activeTab === key
-                ? "text-masters-gold border-b-2 border-masters-gold"
-                : "text-white/40 hover:text-white/60"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* Mobile bottom tab bar */}
+      {/* Mobile bottom tab bar (desktop shows all panels in sidebar, no tabs needed) */}
       <div className="lg:hidden">
         <BottomTabBar activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab as Tab)} />
       </div>
