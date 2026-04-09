@@ -1,8 +1,15 @@
 import { TournamentInfo } from "@/types";
+import { TrophyIcon } from "@/components/icons/MastersIcons";
 
 interface MastersHeaderProps {
   tournament: TournamentInfo | null;
   isValidating: boolean;
+}
+
+function isLive(tournament: TournamentInfo | null): boolean {
+  if (!tournament) return false;
+  const state = tournament.tournamentState;
+  return state === "r1_live" || state === "r2_live" || state === "r3_live" || state === "r4_live";
 }
 
 export function MastersHeader({ tournament, isValidating }: MastersHeaderProps) {
@@ -13,90 +20,156 @@ export function MastersHeader({ tournament, isValidating }: MastersHeaderProps) 
       })
     : null;
 
+  const live = isLive(tournament);
+
   return (
     <header
-      className="w-full flex items-center justify-between px-4 md:px-8"
+      className="w-full border-b"
       style={{
-        backgroundColor: "var(--augusta-deep)",
-        height: "64px",
+        background: "linear-gradient(180deg, #002a1c 0%, #003d29 100%)",
+        borderColor: "rgba(255, 199, 44, 0.15)",
       }}
     >
-      {/* Left: Trophy icon */}
-      <div className="flex items-center gap-2 w-[80px] md:w-[140px]">
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 28 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
+      {/* Mobile: two-row layout */}
+      <div className="flex flex-col md:hidden">
+        {/* Row 1: icon + title */}
+        <div
+          className="flex items-center justify-between px-4"
+          style={{ height: "44px" }}
         >
-          {/* Trophy cup */}
-          <path
-            d="M9 3h10v9a5 5 0 0 1-10 0V3Z"
-            stroke="#FFC72C"
-            strokeWidth="1.5"
-            fill="rgba(255,199,44,0.12)"
-          />
-          {/* Trophy handles */}
-          <path
-            d="M9 6H6a3 3 0 0 0 3 5M19 6h3a3 3 0 0 1-3 5"
-            stroke="#FFC72C"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          {/* Stem */}
-          <path
-            d="M14 17v4"
-            stroke="#FFC72C"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          {/* Base */}
-          <path
-            d="M10 21h8"
-            stroke="#FFC72C"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          {/* Star accent */}
-          <circle cx="14" cy="8" r="1.5" fill="#FFC72C" opacity="0.6" />
-        </svg>
+          <div className="flex items-center gap-2 w-[40px]">
+            <TrophyIcon className="text-masters-gold" />
+          </div>
+
+          <div className="flex flex-col items-center flex-1">
+            <h1
+              className="font-[family-name:var(--font-display)] text-masters-gold uppercase tracking-[0.18em] text-sm font-semibold leading-none"
+            >
+              THE MASTERS 2026
+            </h1>
+            <span
+              className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.3em] uppercase mt-0.5"
+              style={{ color: "rgba(255, 199, 44, 0.55)" }}
+            >
+              SWEEPSTAKE
+            </span>
+          </div>
+
+          <div className="w-[40px]" />
+        </div>
+
+        {/* Row 2: status bar */}
+        <div
+          className="flex items-center justify-center gap-3 px-4"
+          style={{ height: "28px", borderTop: "1px solid rgba(255,255,255,0.05)" }}
+        >
+          {live && (
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
+              <span
+                className="text-[10px] font-semibold tracking-[0.15em] uppercase font-[family-name:var(--font-mono)]"
+                style={{ color: "#4ADE80" }}
+              >
+                LIVE
+              </span>
+            </div>
+          )}
+          {tournament && !live && (
+            <span
+              className="text-[10px] uppercase tracking-wider font-medium"
+              style={{ color: "rgba(255, 199, 44, 0.85)" }}
+            >
+              {tournament.status}
+            </span>
+          )}
+          {lastUpdated && (
+            <span
+              className="text-[10px] font-[family-name:var(--font-mono)] tabular-nums"
+              style={{ color: "rgba(255, 255, 255, 0.5)" }}
+            >
+              {isValidating ? "Updating…" : `Updated ${lastUpdated}`}
+            </span>
+          )}
+          {!tournament && !isValidating && (
+            <span
+              className="text-[10px]"
+              style={{ color: "rgba(255, 255, 255, 0.4)" }}
+            >
+              No data
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Centre: Title */}
-      <h1
-        className="font-[family-name:var(--font-display)] text-masters-gold uppercase tracking-[0.15em] text-sm md:text-xl font-semibold text-center flex-1"
+      {/* Desktop: single row */}
+      <div
+        className="hidden md:flex items-center justify-between px-8"
+        style={{ height: "72px" }}
       >
-        The Masters 2026
-      </h1>
+        {/* Left: Trophy icon */}
+        <div className="flex items-center gap-3 w-[160px]">
+          <TrophyIcon className="text-masters-gold w-7 h-7" />
+          {live && (
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
+              <span
+                className="text-[11px] font-semibold tracking-[0.15em] uppercase font-[family-name:var(--font-mono)]"
+                style={{ color: "#4ADE80" }}
+              >
+                LIVE
+              </span>
+            </div>
+          )}
+        </div>
 
-      {/* Right: Status + update time */}
-      <div className="flex flex-col items-end gap-0.5 w-[80px] md:w-[140px]">
-        {tournament && (
-          <span
-            className="text-xs uppercase tracking-wider font-medium"
-            style={{ color: "var(--masters-gold)", opacity: 0.85 }}
+        {/* Centre: Title */}
+        <div className="flex flex-col items-center flex-1">
+          <h1
+            className="font-[family-name:var(--font-display)] text-masters-gold uppercase tracking-[0.18em] text-xl font-semibold leading-none"
           >
-            {tournament.status}
-          </span>
-        )}
-        {lastUpdated && (
+            THE MASTERS 2026
+          </h1>
           <span
-            className="text-[10px] md:text-xs"
-            style={{ color: "var(--text-on-green-muted)" }}
+            className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.3em] uppercase mt-1"
+            style={{ color: "rgba(255, 199, 44, 0.55)" }}
           >
-            {isValidating ? "Updating…" : `Updated ${lastUpdated}`}
+            SWEEPSTAKE
           </span>
-        )}
-        {!tournament && !isValidating && (
-          <span
-            className="text-xs"
-            style={{ color: "var(--text-on-green-dim)" }}
-          >
-            No data
-          </span>
-        )}
+        </div>
+
+        {/* Right: Status + update time */}
+        <div className="flex flex-col items-end gap-0.5 w-[160px]">
+          {tournament && !live && (
+            <span
+              className="text-xs uppercase tracking-wider font-medium"
+              style={{ color: "rgba(255, 199, 44, 0.85)" }}
+            >
+              {tournament.status}
+            </span>
+          )}
+          {lastUpdated && (
+            <span
+              className="text-xs font-[family-name:var(--font-mono)] tabular-nums"
+              style={{ color: "rgba(255, 255, 255, 0.5)" }}
+            >
+              {isValidating ? "Updating…" : `Updated ${lastUpdated}`}
+            </span>
+          )}
+          {!tournament && !isValidating && (
+            <span
+              className="text-xs"
+              style={{ color: "rgba(255, 255, 255, 0.4)" }}
+            >
+              No data
+            </span>
+          )}
+        </div>
       </div>
     </header>
   );

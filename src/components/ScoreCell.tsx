@@ -4,29 +4,32 @@ interface ScoreCellProps {
 }
 
 const sizeClasses = {
-  sm: "text-sm",
-  md: "text-base",
-  lg: "text-2xl",
+  sm: "text-[13px] px-2 py-0.5",
+  md: "text-[16px] px-2.5 py-0.5",
+  lg: "text-[28px] px-4 py-1",
 };
 
 export function ScoreCell({ score, size = "md" }: ScoreCellProps) {
-  let colorStyle: string;
+  let pillClasses: string;
   let display: string;
 
   if (score < 0) {
-    colorStyle = "text-score-under";
+    pillClasses =
+      "bg-[rgba(255,45,85,0.12)] text-[#FF2D55] border border-[rgba(255,45,85,0.20)] rounded-md font-semibold";
     display = `${score}`;
   } else if (score > 0) {
-    colorStyle = "text-white/50";
+    pillClasses =
+      "bg-white/5 text-white/45 border border-white/[0.06] rounded-md";
     display = `+${score}`;
   } else {
-    colorStyle = "text-white/80";
+    pillClasses =
+      "bg-white/[0.04] text-white/70 border border-white/[0.06] rounded-md";
     display = "E";
   }
 
   return (
     <span
-      className={`font-[family-name:var(--font-mono)] tabular-nums font-medium ${sizeClasses[size]} ${colorStyle}`}
+      className={`inline-flex items-center justify-center font-[family-name:var(--font-mono)] tabular-nums font-medium ${sizeClasses[size]} ${pillClasses}`}
     >
       {display}
     </span>

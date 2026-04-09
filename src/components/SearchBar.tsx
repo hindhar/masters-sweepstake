@@ -1,13 +1,27 @@
 "use client";
 
+import { useState } from "react";
+import { motion } from "framer-motion";
+
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
 }
 
 export function SearchBar({ value, onChange }: SearchBarProps) {
+  const [focused, setFocused] = useState(false);
+
   return (
-    <div className="relative flex items-center w-full">
+    <motion.div
+      className="relative flex items-center w-full"
+      animate={{
+        boxShadow: focused
+          ? "0 0 0 2px rgba(255,199,44,0.4), 0 0 12px rgba(255,199,44,0.15)"
+          : "0 0 0 0px transparent",
+      }}
+      transition={{ duration: 0.2 }}
+      style={{ borderRadius: "0.5rem" }}
+    >
       {/* Magnifying glass icon */}
       <svg
         className="absolute left-3 pointer-events-none"
@@ -39,8 +53,10 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         placeholder="Search participants..."
-        className="w-full pl-9 pr-8 py-2.5 rounded-lg text-sm text-white outline-none focus:ring-1 focus:ring-masters-gold/40 transition-shadow"
+        className="w-full pl-9 pr-8 py-2.5 rounded-lg text-sm text-white outline-none transition-shadow"
         style={{
           backgroundColor: "var(--augusta-deep)",
           border: "none",
@@ -73,6 +89,6 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
           </svg>
         </button>
       )}
-    </div>
+    </motion.div>
   );
 }

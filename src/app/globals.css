@@ -45,11 +45,48 @@
   --score-under: #FF4D6A;
   --move-up: #4ADE80;
   --move-down: #F87171;
+
+  /* Surface layers */
+  --surface-0: #003d29;
+  --surface-1: #004a34;
+  --surface-2: #005a42;
 }
 
 body {
-  background: #006747;
+  background: radial-gradient(ellipse at 30% 0%, #007a52 0%, #006747 40%, #004d35 100%);
   color: #FFFFFF;
+}
+
+/* Noise texture overlay */
+.masters-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* Leaderboard container */
+.leaderboard-container {
+  background: linear-gradient(180deg, rgba(0, 74, 52, 0.85) 0%, rgba(0, 50, 36, 0.95) 100%);
+  border: 1px solid rgba(255, 199, 44, 0.08);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 199, 44, 0.06) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  border-radius: 1rem;
+}
+
+/* Leaderboard row hover */
+@media (hover: hover) {
+  .leaderboard-row:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
 }
 
 /* Scoreboard row divider */
@@ -60,6 +97,45 @@ body {
 /* Gold glow for leader */
 .leader-glow {
   box-shadow: 0 0 20px rgba(255, 199, 44, 0.3);
+}
+
+/* Skeleton shimmer */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+/* Gold focus ring */
+:focus-visible {
+  outline: 2px solid rgba(255, 199, 44, 0.7);
+  outline-offset: 2px;
+}
+
+/* Gold selection */
+::selection {
+  background-color: rgba(255, 199, 44, 0.25);
+  color: #FFFFFF;
+}
+
+/* Smooth transitions on buttons/links */
+button,
+a {
+  transition: all 200ms ease;
 }
 
 /* Custom scrollbar */

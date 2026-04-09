@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import https from "https";
+import { GolferScore, ManualOverride } from "@/types";
+import { saveRoundSnapshot, getSnapshot, getOverrides } from "@/lib/kv";
+import { detectMissingGolfers, mergeGolfers } from "@/lib/cut-detection";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 10;
@@ -35,6 +38,20 @@ function fetchJSON(url: string): Promise<Record<string, unknown>> {
   });
 }
 
+/**
+ * Parse manual overrides from the SCORE_OVERRIDES env var (JSON array fallback).
+ */
+function getEnvOverrides(): ManualOverride[] {
+  const raw = process.env.SCORE_OVERRIDES;
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function GET() {
   if (cachedResponse && Date.now() < cacheExpiry) {
     return cachedResponse;
@@ -68,7 +85,7 @@ export async function GET() {
     const currentRound = roundMatch ? parseInt(roundMatch[1], 10) : 1;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const golfers = comp.competitors.map((c: any) => {
+    const golfers: GolferScore[] = comp.competitors.map((c: any) => {
       const scoreStr = c.score || "E";
       const scoreToPar =
         scoreStr === "E" ? 0 : parseInt(scoreStr, 10) || 0;
@@ -120,6 +137,46 @@ export async function GET() {
       };
     });
 
+    // Always snapshot current golfers (aggressive snapshotting from R1 onwards)
+    if (currentRound >= 1) {
+      await saveRoundSnapshot(currentRound, golfers);
+    }
+
+    // After R2, merge in any golfers that ESPN has dropped (cut golfers)
+    let finalGolfers = golfers;
+    if (currentRound > 2) {
+      const r2Snapshot = await getSnapshot(2);
+      if (r2Snapshot) {
+        const missing = detectMissingGolfers(golfers, r2Snapshot);
+        if (missing.length > 0) {
+          // Fetch KV overrides and merge with env overrides
+          const kvOverrides = await getOverrides();
+          const envOverrides = getEnvOverrides();
+          // KV overrides take precedence over env overrides
+          const overrideNames = new Set(kvOverrides.map((o) => o.name.toLowerCase()));
+          const mergedOverrides = [
+            ...kvOverrides,
+            ...envOverrides.filter((o) => !overrideNames.has(o.name.toLowerCase())),
+          ];
+          finalGolfers = mergeGolfers(golfers, missing, mergedOverrides);
+        }
+      }
+    }
+
+    // Apply overrides even if no cut merge was needed (e.g. score corrections in R1-R2)
+    if (currentRound <= 2) {
+      const kvOverrides = await getOverrides();
+      const envOverrides = getEnvOverrides();
+      const overrideNames = new Set(kvOverrides.map((o) => o.name.toLowerCase()));
+      const mergedOverrides = [
+        ...kvOverrides,
+        ...envOverrides.filter((o) => !overrideNames.has(o.name.toLowerCase())),
+      ];
+      if (mergedOverrides.length > 0) {
+        finalGolfers = mergeGolfers(finalGolfers, [], mergedOverrides);
+      }
+    }
+
     const response = NextResponse.json(
       {
         tournament: {
@@ -128,7 +185,7 @@ export async function GET() {
           currentRound,
           lastUpdated: new Date().toISOString(),
         },
-        golfers,
+        golfers: finalGolfers,
       },
       {
         headers: {

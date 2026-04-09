@@ -46,6 +46,32 @@ export interface TournamentInfo {
   status: string;
   currentRound: number;
   lastUpdated: string;
+  roundComplete?: boolean;
+  tournamentState?: TournamentState;
+}
+
+export type TournamentState =
+  | "pre"
+  | "r1_live"
+  | "r1_complete"
+  | "r2_live"
+  | "r2_complete"
+  | "r3_live"
+  | "r3_complete"
+  | "r4_live"
+  | "final";
+
+export interface StoredSnapshot {
+  timestamp: string;
+  round: number;
+  golfers: GolferScore[];
+}
+
+export interface ManualOverride {
+  name: string;
+  scoreToPar: number;
+  status: GolferStatus;
+  reason: string;
 }
 
 export interface LeaderboardAPIResponse {

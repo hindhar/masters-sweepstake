@@ -13,7 +13,10 @@ export const LiveTicker = React.memo(function LiveTicker({ golfers }: LiveTicker
     return (
       <div
         className="rounded-xl p-6"
-        style={{ backgroundColor: "var(--augusta-surface)" }}
+        style={{
+          background: "linear-gradient(180deg, rgba(0,74,52,0.9), rgba(0,61,41,0.95))",
+          border: "1px solid rgba(255,255,255,0.04)",
+        }}
       >
         <h2
           className="text-[11px] uppercase tracking-[0.2em] font-semibold mb-4"
@@ -47,12 +50,18 @@ export const LiveTicker = React.memo(function LiveTicker({ golfers }: LiveTicker
   return (
     <div
       className="rounded-xl overflow-hidden"
-      style={{ backgroundColor: "var(--augusta-surface)" }}
+      style={{
+        background: "linear-gradient(180deg, rgba(0,74,52,0.9), rgba(0,61,41,0.95))",
+        border: "1px solid rgba(255,255,255,0.04)",
+      }}
     >
-      {/* Header */}
+      {/* Panel header */}
       <div
         className="px-4 py-3"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        style={{
+          background: "rgba(0,0,0,0.10)",
+          borderBottom: "1px solid rgba(255,199,44,0.10)",
+        }}
       >
         <h2
           className="text-[11px] uppercase tracking-[0.2em] font-semibold"
@@ -90,7 +99,7 @@ export const LiveTicker = React.memo(function LiveTicker({ golfers }: LiveTicker
             <span className="flex-1 text-sm truncate text-white/80">
               {golfer.name}
             </span>
-            <div className="w-14 text-right shrink-0">
+            <div className="w-14 flex justify-end shrink-0">
               <ScoreCell score={golfer.scoreToPar} size="sm" />
             </div>
             <span
@@ -134,7 +143,7 @@ export const LiveTicker = React.memo(function LiveTicker({ golfers }: LiveTicker
                 >
                   {golfer.name}
                 </span>
-                <div className="w-14 text-right shrink-0">
+                <div className="w-14 flex justify-end shrink-0">
                   <ScoreCell score={golfer.scoreToPar} size="sm" />
                 </div>
                 <span className="w-12 text-right shrink-0 text-xs" style={{ color: "var(--text-on-green-dim)" }}>

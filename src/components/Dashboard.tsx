@@ -7,6 +7,7 @@ import { HeroLeaderboard } from "./leaderboard/HeroLeaderboard";
 import { LiveTicker } from "./tournament/LiveTicker";
 import { GroupBreakdown } from "./tournament/GroupBreakdown";
 import { FunStatsPanel } from "./stats/FunStatsPanel";
+import { BottomTabBar } from "./navigation/BottomTabBar";
 
 type Tab = "leaderboard" | "tournament" | "groups" | "stats";
 
@@ -29,8 +30,8 @@ export function Dashboard() {
       {/* Header */}
       <MastersHeader tournament={tournament} isValidating={isValidating} />
 
-      {/* Mobile tab bar */}
-      <div className="lg:hidden flex border-b border-white/[0.06]">
+      {/* Desktop tab bar */}
+      <div className="hidden lg:flex border-b border-white/[0.06]">
         {(
           [
             { key: "leaderboard", label: "Leaderboard" },
@@ -53,8 +54,13 @@ export function Dashboard() {
         ))}
       </div>
 
+      {/* Mobile bottom tab bar */}
+      <div className="lg:hidden">
+        <BottomTabBar activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab as Tab)} />
+      </div>
+
       {/* Main content */}
-      <div className="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full">
+      <div className="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full pb-20 lg:pb-0">
         {/* Left: Leaderboard */}
         <div
           className={`flex-1 min-w-0 p-4 lg:p-6 ${
@@ -99,7 +105,7 @@ export function Dashboard() {
               activeTab !== "stats" ? "hidden lg:block" : ""
             }`}
           >
-            <FunStatsPanel stats={funStats} />
+            <FunStatsPanel stats={funStats} leaderboard={fullLeaderboard} golfers={golfers} />
           </div>
         </div>
       </div>
