@@ -1,0 +1,68 @@
+export type GroupId = 'G1' | 'G2' | 'G3' | 'G4' | 'G5' | 'G6' | 'G7' | 'G8';
+
+export interface ParticipantPicks {
+  id: string;
+  name: string;
+  picks: Record<GroupId, string>;
+}
+
+export type GolferStatus = 'active' | 'finished' | 'cut' | 'withdrawn';
+
+export interface GolferScore {
+  name: string;
+  position: number;
+  positionDisplay: string;
+  scoreToPar: number;
+  scoreToParDisplay: string;
+  today: string;
+  thru: string;
+  currentRound: number;
+  status: GolferStatus;
+  country?: string;
+}
+
+export interface ParticipantGolferScore {
+  group: GroupId;
+  golferName: string;
+  score: GolferScore | null;
+}
+
+export interface ParticipantEntry {
+  participant: ParticipantPicks;
+  totalScore: number;
+  totalScoreDisplay: string;
+  position: number;
+  positionDisplay: string;
+  previousPosition?: number;
+  movement: number;
+  golferScores: ParticipantGolferScore[];
+  bestGolfer: { name: string; score: number } | null;
+  worstGolfer: { name: string; score: number } | null;
+}
+
+export interface TournamentInfo {
+  name: string;
+  status: string;
+  currentRound: number;
+  lastUpdated: string;
+}
+
+export interface LeaderboardAPIResponse {
+  tournament: TournamentInfo;
+  golfers: GolferScore[];
+}
+
+export interface GolferInfo {
+  name: string;
+  group: GroupId;
+  owgr?: number;
+}
+
+export interface FunStats {
+  bestPick: { participant: string; golfer: string; score: number } | null;
+  worstPick: { participant: string; golfer: string; score: number } | null;
+  biggestMover: { participant: string; positions: number } | null;
+  tightestRace: { count: number; scoreDiff: number } | null;
+  mostPopularGolfer: { name: string; pickedBy: number; score: number } | null;
+  contrarianHero: { participant: string; golfer: string; pickedBy: number; score: number } | null;
+}

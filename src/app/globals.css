@@ -1,26 +1,102 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Augusta Green palette */
+  --augusta: #006747;
+  --augusta-deep: #004d35;
+  --augusta-light: #008c5e;
+  --augusta-surface: #00503a;
+
+  /* Masters Gold */
+  --masters-gold: #FFC72C;
+  --masters-gold-dim: #D4A520;
+  --masters-gold-bright: #FFD54F;
+
+  /* Fairway & accent */
+  --fairway: #2D5F3C;
+  --azalea: #CF4B7A;
+  --magnolia: #F5F0E8;
+  --dogwood: #FFFFFF;
+
+  /* Scores */
+  --score-under: #FF4D6A;
+  --score-over: rgba(255, 255, 255, 0.5);
+  --score-even: rgba(255, 255, 255, 0.8);
+
+  /* Text */
+  --text-on-green: #FFFFFF;
+  --text-on-green-muted: rgba(255, 255, 255, 0.7);
+  --text-on-green-dim: rgba(255, 255, 255, 0.4);
+
+  /* Movement */
+  --move-up: #4ADE80;
+  --move-down: #F87171;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-augusta: var(--augusta);
+  --color-augusta-deep: var(--augusta-deep);
+  --color-augusta-light: var(--augusta-light);
+  --color-augusta-surface: var(--augusta-surface);
+  --color-masters-gold: var(--masters-gold);
+  --color-masters-gold-dim: var(--masters-gold-dim);
+  --color-masters-gold-bright: var(--masters-gold-bright);
+  --color-fairway: var(--fairway);
+  --color-azalea: var(--azalea);
+  --color-magnolia: var(--magnolia);
+  --color-dogwood: var(--dogwood);
+  --color-score-under: var(--score-under);
+  --color-score-over: var(--score-over);
+  --color-score-even: var(--score-even);
+  --color-move-up: var(--move-up);
+  --color-move-down: var(--move-down);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-playfair);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--augusta);
+  color: var(--text-on-green);
+  font-family: var(--font-sans);
+}
+
+/* Tabular numbers for score alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scoreboard row divider */
+.scoreboard-divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Score cell animations */
+@keyframes score-flash {
+  0% { background-color: rgba(255, 199, 44, 0.4); }
+  100% { background-color: transparent; }
+}
+
+.score-flash {
+  animation: score-flash 0.8s ease-out;
+}
+
+/* Gold glow for leader */
+.leader-glow {
+  box-shadow: 0 0 20px rgba(255, 199, 44, 0.3);
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--augusta-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
