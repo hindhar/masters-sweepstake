@@ -41,6 +41,8 @@ export function ParticipantDetail({ entry }: ParticipantDetailProps) {
             worstGolfer && gs.golferName === worstGolfer.name;
           const isCut = gs.score?.status === "cut";
           const isMissed = gs.score?.status === "cut" || gs.score?.status === "withdrawn";
+          const isCounting = gs.counting !== false; // counting towards best-4 total
+          const isDropped = gs.score && !gs.counting;
 
           return (
             <div
@@ -52,7 +54,7 @@ export function ParticipantDetail({ entry }: ParticipantDetailProps) {
                   : isWorst
                   ? "rgba(200,60,60,0.12)"
                   : "rgba(0,80,58,0.4)",
-                opacity: isCut ? 0.5 : 1,
+                opacity: isCut ? 0.5 : isDropped ? 0.45 : 1,
               }}
             >
               {/* Group label */}

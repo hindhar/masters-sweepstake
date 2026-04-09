@@ -52,24 +52,40 @@ export function calculateParticipantScore(
     return { group, golferName, score };
   });
 
-  const totalScore = golferScores.reduce((sum, gs) => {
-    return sum + (gs.score?.scoreToPar ?? 0);
+  // Best 4 of 8 scoring: only the 4 lowest (best) scores count
+  const scoredPicks = golferScores
+    .filter((gs) => gs.score !== null)
+    .sort((a, b) => (a.score!.scoreToPar) - (b.score!.scoreToPar));
+
+  const countingPicks = scoredPicks.slice(0, 4);
+  const droppedPicks = scoredPicks.slice(4);
+
+  const totalScore = countingPicks.reduce((sum, gs) => {
+    return sum + gs.score!.scoreToPar;
   }, 0);
 
-  // Find best and worst picks
-  let bestGolfer: { name: string; score: number } | null = null;
-  let worstGolfer: { name: string; score: number } | null = null;
-
+  // Mark which golfers are counting vs dropped
+  const countingNames = new Set(countingPicks.map((gs) => gs.golferName));
   for (const gs of golferScores) {
-    if (!gs.score) continue;
-    const s = gs.score.scoreToPar;
-    if (!bestGolfer || s < bestGolfer.score) {
-      bestGolfer = { name: gs.golferName, score: s };
-    }
-    if (!worstGolfer || s > worstGolfer.score) {
-      worstGolfer = { name: gs.golferName, score: s };
-    }
+    (gs as ParticipantGolferScore & { counting?: boolean }).counting =
+      countingNames.has(gs.golferName);
   }
+
+  // Best = lowest scoring counting pick, Worst = highest scoring counting pick
+  const bestGolfer = countingPicks.length > 0
+    ? { name: countingPicks[0].golferName, score: countingPicks[0].score!.scoreToPar }
+    : null;
+  const worstGolfer = countingPicks.length > 0
+    ? { name: countingPicks[countingPicks.length - 1].golferName, score: countingPicks[countingPicks.length - 1].score!.scoreToPar }
+    : null;
+
+  // Count how many golfers have started (thru > 0 holes)
+  const thruCount = golferScores.filter(
+    (gs) => gs.score && gs.score.thru !== "-" && gs.score.thru !== "0"
+  ).length;
+
+  void droppedPicks; // used for clarity, not needed in output
+  void thruCount;
 
   return {
     participant,

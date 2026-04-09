@@ -25,6 +25,7 @@ export interface ParticipantGolferScore {
   group: GroupId;
   golferName: string;
   score: GolferScore | null;
+  counting?: boolean; // true if this golfer is in the best 4 counting towards total
 }
 
 export interface ParticipantEntry {
